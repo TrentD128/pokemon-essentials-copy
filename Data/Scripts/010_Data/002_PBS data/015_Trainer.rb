@@ -7,6 +7,8 @@ module GameData
     attr_reader :items
     attr_reader :real_lose_text
     attr_reader :pokemon
+    attr_reader :cansnag    
+    attr_reader :canusesnag 
 
     DATA = {}
     DATA_FILENAME = "trainers.dat"
@@ -31,6 +33,8 @@ module GameData
       "SuperShiny"   => [:super_shininess, "b"],
       "Shadow"       => [:shadowness,      "b"],
       "Ball"         => [:poke_ball,       "e", :Item]
+      "CanSnag"      => [:cansnag,         "u"],  # Can snag player's Pokemon?
+      "CanUseSnag"      => [:canusesnag,   "b"]  # Can use snagged Pokemon?
     }
 
     extend ClassMethodsSymbols
@@ -78,6 +82,8 @@ module GameData
       @items          = hash[:items]        || []
       @real_lose_text = hash[:lose_text]    || "..."
       @pokemon        = hash[:pokemon]      || []
+      @cansnag        = hash[:cansnag]      || 0
+      @canusesnag     = hash[:canusesnag]   || false
       @pokemon.each do |pkmn|
         GameData::Stat.each_main do |s|
           pkmn[:iv][s.id] ||= 0 if pkmn[:iv]
@@ -111,6 +117,8 @@ module GameData
       trainer.id        = $player.make_foreign_ID
       trainer.items     = @items.clone
       trainer.lose_text = self.lose_text
+      trainer.cansnag = @cansnag
+      trainer.canusesnag = @canusesnag
       # Create each Pokémon owned by the trainer
       @pokemon.each do |pkmn_data|
         species = GameData::Species.get(pkmn_data[:species]).species
