@@ -64,6 +64,10 @@ class Battle::AI
     return if pbEnemyShouldWithdraw?(idxBattler)
     return if @battle.pbAutoFightMenu(idxBattler)
     @battle.pbRegisterMegaEvolution(idxBattler) if pbEnemyShouldMegaEvolve?(idxBattler)
+     # Attempt to steal a Pokémon
+  if @battle.battlers[idxBattler].pokemonCount < 6 && rand(100) < 10 # Change 10 to the probability you want for the AI to attempt to steal a Pokémon
+    pbAIStealPokemon(idxBattler)
+  end
     pbChooseMoves(idxBattler)
   end
 end
